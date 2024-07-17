@@ -1,24 +1,34 @@
 ﻿using Calculator.Core.Interfaces;
 using Calculator.Core.Models;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Calculator.Services.Implementation
 {
     public class CalculationService : ICalculationService
     {
-        public event Action<Exception> OnError;
-        double result = 0;
+        public event Action<Exception>? OnError;
+        private readonly ILogger<CalculationService> _logger;
+        private double result = 0;
+
+        public CalculationService(ILogger<CalculationService> logger)
+        {
+            _logger = logger;
+        }
 
         public CalculationModel Calculate(ExpressionType expression, double firstOperand, double secondOperand, bool returnInteger)
         {
             if (!Enum.IsDefined(typeof(ExpressionType), expression))
             {
+                _logger.LogError("Invalid value for {Expression}", nameof(expression));
                 throw new ArgumentException($"Invalid value for {nameof(expression)}.", nameof(expression));
             }
 
             try
             {
-                // faster way how to use switch
-                double result = expression switch
+                _logger.LogInformation("Performing calculation for expression: {Expression}, operands: {FirstOperand}, {SecondOperand}", expression, firstOperand, secondOperand);
+
+                result = expression switch
                 {
                     ExpressionType.Addition => firstOperand + secondOperand,
                     ExpressionType.Substraction => firstOperand - secondOperand,
@@ -30,6 +40,8 @@ namespace Calculator.Services.Implementation
 
                 SetReturnIntegers(returnInteger);
 
+                _logger.LogInformation("Calculation successful. Result: {Result}", result);
+
                 return new CalculationModel
                 {
                     Expression = expression,
@@ -40,6 +52,7 @@ namespace Calculator.Services.Implementation
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred during the calculation for expression: {Expression}, operands: {FirstOperand}, {SecondOperand}", expression, firstOperand, secondOperand);
                 OnError?.Invoke(ex);
                 throw;
             }
