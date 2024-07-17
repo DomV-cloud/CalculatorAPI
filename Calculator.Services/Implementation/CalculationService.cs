@@ -3,42 +3,34 @@ using Calculator.Core.Models;
 
 namespace Calculator.Services.Implementation
 {
-    public class CalculationService : ICaltulationService
+    public class CalculationService : ICalculationService
     {
         public event Action<Exception> OnError;
-        private bool returnIntegers = false;
         double result = 0;
 
-        public CalcaulationModel Calculate(ExpressionType expression, double firstOperand, double secondOperand)
+        public CalculationModel Calculate(ExpressionType expression, double firstOperand, double secondOperand, bool returnInteger)
         {
+            if (!Enum.IsDefined(typeof(ExpressionType), expression))
+            {
+                throw new ArgumentException($"Invalid value for {nameof(expression)}.", nameof(expression));
+            }
+
             try
             {
-                switch (expression)
+                // faster way how to use switch
+                double result = expression switch
                 {
-                    case ExpressionType.Addition:
-                        result = firstOperand + secondOperand;
-                        break;
-                    case ExpressionType.Substraction:
-                        result = firstOperand - secondOperand;
-                        break;
-                    case ExpressionType.Multiplication:
-                        result = firstOperand * secondOperand;
-                        break;
-                    case ExpressionType.Division:
-                        if (secondOperand == 0)
-                        {
-                            throw new DivideByZeroException("Cannot divide by zero");
-                        }
-                        result = firstOperand / secondOperand;
-                        break;
-                }
+                    ExpressionType.Addition => firstOperand + secondOperand,
+                    ExpressionType.Substraction => firstOperand - secondOperand,
+                    ExpressionType.Multiplication => firstOperand * secondOperand,
+                    ExpressionType.Division when secondOperand != 0 => firstOperand / secondOperand,
+                    ExpressionType.Division => throw new DivideByZeroException("Cannot divide by zero"),
+                    _ => throw new InvalidOperationException("Unsupported operation")
+                };
 
-                if (returnIntegers)
-                {
-                    //SetReturnIntegers();
-                }
+                SetReturnIntegers(returnInteger);
 
-                return new CalcaulationModel
+                return new CalculationModel
                 {
                     Expression = expression,
                     FirstOperand = firstOperand,
@@ -53,11 +45,11 @@ namespace Calculator.Services.Implementation
             }
         }
 
-        public void SetReturnIntegers(bool returnIntegers)
+        public void SetReturnIntegers(bool returnInteger)
         {
-            if (returnIntegers)
+            if (returnInteger)
             {
-                result = Math.Round(result); // oddělit ještě jednou servisou...
+                result = Math.Round(result);
             }
         }
     }

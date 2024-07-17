@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Models
 {
-    public class CalcaulationModel
+    public class CalculationModel
     {
         public ExpressionType Expression { get; set; }
         public double FirstOperand { get; set; }
@@ -10,9 +10,9 @@
 
     public enum ExpressionType
     {
-        Addition,
-        Substraction,
-        Multiplication,
-        Division
+        Addition = '+',
+        Substraction = '-',
+        Multiplication = '*',
+        Division = '/'
     }
 }

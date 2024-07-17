@@ -5,7 +5,7 @@ namespace Calculator.Data.Interfaces
 {
     public interface ICalculationLogging
     {
-        public Task LogCalculation(CalcaulationModel calcaulationModel);
+        public Task LogCalculation(CalculationModel calcaulationModel);
         Task<IEnumerable<CalculationLog>> GetAllLogs();
     }
 }

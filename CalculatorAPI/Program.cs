@@ -1,5 +1,8 @@
 
+using Calculator.Core.Interfaces;
 using Calculator.Data.DatabaseContext;
+using Calculator.Data.Interfaces;
+using Calculator.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalculatorAPI
@@ -19,9 +22,11 @@ namespace CalculatorAPI
 
             builder.Services.AddDbContext<CalculatorDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
+
+            builder.Services.AddScoped<ICalculationLogging, CalculationLoggingService>();
+            builder.Services.AddScoped<ICalculationService, CalculationService>();
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

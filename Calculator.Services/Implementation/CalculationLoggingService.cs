@@ -20,7 +20,7 @@ namespace Calculator.Services.Implementation
             return await _context.CalculationLogs.ToListAsync();
         }
 
-        public async Task LogCalculation(CalcaulationModel calcaulationModel)
+        public async Task LogCalculation(CalculationModel calcaulationModel)
         {
             ArgumentNullException.ThrowIfNull(calcaulationModel);
 
