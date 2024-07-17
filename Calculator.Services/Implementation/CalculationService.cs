@@ -1,37 +1,36 @@
 ﻿using Calculator.Core.Interfaces;
 using Calculator.Core.Models;
-using Microsoft.Extensions.Logging;
-using System;
+using Calculator.Infrastructure.Interfaces;
 
 namespace Calculator.Services.Implementation
 {
     public class CalculationService : ICalculationService
     {
         public event Action<Exception>? OnError;
-        private readonly ILogger<CalculationService> _logger;
+        private readonly ILoggingService _loggingService;
         private double result = 0;
 
-        public CalculationService(ILogger<CalculationService> logger)
+        public CalculationService(ILoggingService loggingService)
         {
-            _logger = logger;
+            _loggingService = loggingService;
         }
 
         public CalculationModel Calculate(ExpressionType expression, double firstOperand, double secondOperand, bool returnInteger)
         {
             if (!Enum.IsDefined(typeof(ExpressionType), expression))
             {
-                _logger.LogError("Invalid value for {Expression}", nameof(expression));
+                _loggingService.LogErrorAsync("Invalid value for {0}", nameof(expression));
                 throw new ArgumentException($"Invalid value for {nameof(expression)}.", nameof(expression));
             }
 
             try
             {
-                _logger.LogInformation("Performing calculation for expression: {Expression}, operands: {FirstOperand}, {SecondOperand}", expression, firstOperand, secondOperand);
+                _loggingService.LogInformationAsync("Performing calculation for expression: {0}, operands: {1}, {2}", expression, firstOperand, secondOperand);
 
                 result = expression switch
                 {
                     ExpressionType.Addition => firstOperand + secondOperand,
-                    ExpressionType.Substraction => firstOperand - secondOperand,
+                    ExpressionType.Substraction => firstOperand - secondOperand, // opraven překlep
                     ExpressionType.Multiplication => firstOperand * secondOperand,
                     ExpressionType.Division when secondOperand != 0 => firstOperand / secondOperand,
                     ExpressionType.Division => throw new DivideByZeroException("Cannot divide by zero"),
@@ -40,7 +39,7 @@ namespace Calculator.Services.Implementation
 
                 SetReturnIntegers(returnInteger);
 
-                _logger.LogInformation("Calculation successful. Result: {Result}", result);
+                _loggingService.LogInformationAsync("Calculation successful. Result: {0}", result);
 
                 return new CalculationModel
                 {
@@ -52,7 +51,7 @@ namespace Calculator.Services.Implementation
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred during the calculation for expression: {Expression}, operands: {FirstOperand}, {SecondOperand}", expression, firstOperand, secondOperand);
+                _loggingService.LogErrorAsync("An error occurred during the calculation for expression: {0}, operands: {1}, {2}", ex, expression, firstOperand, secondOperand);
                 OnError?.Invoke(ex);
                 throw;
             }

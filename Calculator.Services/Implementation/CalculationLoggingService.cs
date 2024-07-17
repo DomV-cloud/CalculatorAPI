@@ -2,36 +2,36 @@
 using Calculator.Data.DatabaseContext;
 using Calculator.Data.Interfaces;
 using Calculator.Data.Models;
+using Calculator.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Calculator.Services.Implementation
 {
     public class CalculationLoggingService : ICalculationLogging
     {
         private readonly CalculatorDbContext _context;
-        private readonly ILogger<CalculationLoggingService> _logger;
+        private readonly ILoggingService _loggingService;
 
         public CalculationLoggingService(
             CalculatorDbContext context,
-            ILogger<CalculationLoggingService> logger)
+            ILoggingService loggingService)
         {
             _context = context;
-            _logger = logger;
+            _loggingService = loggingService;
         }
 
         public async Task<IEnumerable<CalculationLog>> GetAllLogs()
         {
             try
             {
-                _logger.LogInformation("Fetching all calculation logs from the database...");
+                await _loggingService.LogInformationAsync("Fetching all calculation logs from the database...");
                 var logs = await _context.CalculationLogs.ToListAsync();
-                _logger.LogInformation("Fetched {Count} calculation logs from the database.", logs.Count);
+                await _loggingService.LogInformationAsync("Fetched {0} calculation logs from the database.", logs.Count);
                 return logs;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching calculation logs from the database.");
+                await _loggingService.LogErrorAsync("An error occurred while fetching calculation logs from the database.", ex);
                 throw;
             }
         }
@@ -40,7 +40,7 @@ namespace Calculator.Services.Implementation
         {
             if (calculationModel is null)
             {
-                _logger.LogError("calculationModel is null");
+                await _loggingService.LogErrorAsync("calculationModel is null");
                 throw new ArgumentNullException(nameof(calculationModel), "Calculation model cannot be null.");
             }
 
@@ -55,16 +55,16 @@ namespace Calculator.Services.Implementation
 
             try
             {
-                _logger.LogInformation("Saving {ModelName} to the database...", nameof(calculationModel));
+                await _loggingService.LogInformationAsync("Saving {0} to the database...", nameof(calculationModel));
                 await _context.CalculationLogs.AddAsync(log);
 
-                _logger.LogInformation("Saving changes to the database...");
+                await _loggingService.LogInformationAsync("Saving changes to the database...");
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Changes saved successfully.");
+                await _loggingService.LogInformationAsync("Changes saved successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while saving the calculation log to the database.");
+                await _loggingService.LogErrorAsync("An error occurred while saving the calculation log to the database.", ex);
                 throw;
             }
         }

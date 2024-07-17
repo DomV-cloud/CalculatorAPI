@@ -1,10 +1,13 @@
-﻿using Calculator.Core.Interfaces;
-using Calculator.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Calculator.Infrastructure.Interfaces;
+using System;
+using System.Threading.Tasks;
+using Calculator.Core.Interfaces;
 using Calculator.Data.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Calculator.Core.Models;
+using Calculator.Infrastructure.Services;
 
-namespace CalculatorAPI.Controllers
+namespace Calculator.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -12,16 +15,22 @@ namespace CalculatorAPI.Controllers
     {
         private readonly ICalculationLogging _calculationLogging;
         private readonly ICalculationService _calculationService;
-        private readonly ILogger<CalculatorController> _logger;
+        private readonly ILoggingService _loggingService;
 
         public CalculatorController(
             ICalculationLogging calculationLogging,
             ICalculationService calculationService,
-            ILogger<CalculatorController> logger)
+            ILoggingService loggingService)
         {
             _calculationLogging = calculationLogging;
             _calculationService = calculationService;
-            _logger = logger;
+            _loggingService = loggingService;
+            _calculationService.OnError += SendError;
+        }
+
+        private void SendError(Exception ex)
+        {
+            _loggingService.LogErrorAsync($"Exception with message {ex.Message} was thrown ");
         }
 
         [HttpPost("calculate", Name = "calculate")]
@@ -29,19 +38,17 @@ namespace CalculatorAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Starting calculation for expression: {ExpressionType}, operands: {FirstOperand}, {SecondOperand}", expressionType, firstOperand, secondOperand);
+                await _loggingService.LogInformationAsync("Starting calculation for expression: {0}, operands: {1}, {2}", expressionType, firstOperand, secondOperand);
                 var calculation = _calculationService.Calculate(expressionType, firstOperand, secondOperand, returnInteger);
 
-                _logger.LogInformation("Calculation successful. Result: {Result}", calculation.Result);
-                _logger.LogInformation("Saving result to database...");
+                await _loggingService.LogInformationAsync("Saving result to database...");
                 await _calculationLogging.LogCalculation(calculation);
-                _logger.LogInformation("Result saved to database successfully.");
 
                 return Ok(calculation);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while calculating the expression: {ExpressionType}, operands: {FirstOperand}, {SecondOperand}", expressionType, firstOperand, secondOperand);
+                await _loggingService.LogErrorAsync("An error occurred during calculation. Exception: {0}", ex.Message);
                 return StatusCode(500, "An error occurred during calculation.");
             }
         }
@@ -51,14 +58,14 @@ namespace CalculatorAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Fetching all calculation logs...");
+                await _loggingService.LogInformationAsync("Fetching all calculation logs...");
                 var allLogs = await _calculationLogging.GetAllLogs();
-                _logger.LogInformation("Fetched {Count} calculation logs successfully.", allLogs.Count());
+                await _loggingService.LogInformationAsync("Fetched {0} calculation logs from the database.", allLogs.Count());
                 return Ok(allLogs);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching calculation logs.");
+                await _loggingService.LogErrorAsync("An error occurred while fetching calculation logs. Exception: {0}", ex.Message);
                 return StatusCode(500, "An error occurred while fetching logs.");
             }
         }
