@@ -5,7 +5,7 @@ namespace Calculator.Data.DatabaseContext
 {
     public class CalculatorDbContext : DbContext
     {
-        public DbSet<CalculationLog> CalculationLogs { get; set; }
+        public virtual DbSet<CalculationLog> CalculationLogs { get; set; }
 
         public CalculatorDbContext(DbContextOptions options) : base(options)
         {

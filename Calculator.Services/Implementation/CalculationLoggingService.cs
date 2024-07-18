@@ -25,7 +25,7 @@ namespace Calculator.Services.Implementation
             try
             {
                 await _loggingService.LogInformationAsync("Fetching all calculation logs from the database...");
-                var logs = await _context.CalculationLogs.ToListAsync();
+                var logs = _context.CalculationLogs.ToList();
                 await _loggingService.LogInformationAsync("Fetched {0} calculation logs from the database.", logs.Count);
                 return logs;
             }
