@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Calculator.Data.Migrations
 {
     [DbContext(typeof(CalculatorDbContext))]
-    [Migration("20240717065523_initDatabase")]
-    partial class initDatabase
+    [Migration("20240719162615_CalculatorDb")]
+    partial class CalculatorDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,8 +31,9 @@ namespace Calculator.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Expression")
-                        .HasColumnType("int");
+                    b.Property<string>("Expression")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("FirstOperand")
                         .HasColumnType("float");

@@ -6,11 +6,14 @@ using Calculator.Core.Interfaces;
 using Calculator.Data.Interfaces;
 using Calculator.Core.Models;
 using Calculator.Infrastructure.Services;
+using System.Web.Http.Cors;
+using CalculatorAPI.DTO;
 
 namespace Calculator.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+
     public class CalculatorController : ControllerBase
     {
         private readonly ICalculationLogging _calculationLogging;
@@ -34,12 +37,12 @@ namespace Calculator.Web.Controllers
         }
 
         [HttpPost("calculate", Name = "calculate")]
-        public async Task<IActionResult> Calculate(ExpressionType expressionType, double firstOperand, double secondOperand, bool returnInteger)
+        public async Task<IActionResult> Calculate([FromBody] CalculationRequestDto request)
         {
             try
             {
-                await _loggingService.LogInformationAsync("Starting calculation for expression: {0}, operands: {1}, {2}", expressionType, firstOperand, secondOperand);
-                var calculation = _calculationService.Calculate(expressionType, firstOperand, secondOperand, returnInteger);
+                await _loggingService.LogInformationAsync("Starting calculation for expression: {0}, operands: {1}, {2}", request.ExpressionType, request.FirstOperand, request.SecondOperand);
+                var calculation = _calculationService.Calculate(request.ExpressionType, request.FirstOperand, request.SecondOperand, request.ReturnInteger);
 
                 await _loggingService.LogInformationAsync("Saving result to database...");
                 await _calculationLogging.LogCalculation(calculation);

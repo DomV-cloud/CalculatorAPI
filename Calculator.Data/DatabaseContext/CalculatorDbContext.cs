@@ -1,5 +1,7 @@
-﻿using Calculator.Data.Models;
+﻿using Calculator.Core.Models;
+using Calculator.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Calculator.Data.DatabaseContext
 {
@@ -9,6 +11,12 @@ namespace Calculator.Data.DatabaseContext
 
         public CalculatorDbContext(DbContextOptions options) : base(options)
         {
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CalculationLog>()
+                .Property(e => e.Expression)
+                .HasConversion(new EnumToStringConverter<ExpressionType>());
         }
     }
 }

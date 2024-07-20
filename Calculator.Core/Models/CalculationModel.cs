@@ -1,4 +1,7 @@
-﻿namespace Calculator.Core.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace Calculator.Core.Models
 {
     public class CalculationModel
     {
@@ -8,11 +11,19 @@
         public double Result { get; set; }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ExpressionType
     {
-        Addition = '+',
-        Substraction = '-',
-        Multiplication = '*',
-        Division = '/'
+        [Display(Name = "+")]
+        Addition,
+
+        [Display(Name = "-")]
+        Subtraction,
+
+        [Display(Name = "*")]
+        Multiplication,
+
+        [Display(Name = "/")]
+        Division
     }
 }

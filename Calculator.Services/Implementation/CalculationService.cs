@@ -30,7 +30,7 @@ namespace Calculator.Services.Implementation
                 result = expression switch
                 {
                     ExpressionType.Addition => firstOperand + secondOperand,
-                    ExpressionType.Substraction => firstOperand - secondOperand, // opraven překlep
+                    ExpressionType.Subtraction => firstOperand - secondOperand, 
                     ExpressionType.Multiplication => firstOperand * secondOperand,
                     ExpressionType.Division when secondOperand != 0 => firstOperand / secondOperand,
                     ExpressionType.Division => throw new DivideByZeroException("Cannot divide by zero"),

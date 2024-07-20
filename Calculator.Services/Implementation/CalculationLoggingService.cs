@@ -25,7 +25,9 @@ namespace Calculator.Services.Implementation
             try
             {
                 await _loggingService.LogInformationAsync("Fetching all calculation logs from the database...");
-                var logs = _context.CalculationLogs.ToList();
+                var logs = _context.CalculationLogs
+                    .OrderByDescending( x => x.TimeStamp)
+                    .ToList();
                 await _loggingService.LogInformationAsync("Fetched {0} calculation logs from the database.", logs.Count);
                 return logs;
             }

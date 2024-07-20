@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Calculator.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initDatabase : Migration
+    public partial class CalculatorDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace Calculator.Data.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Expression = table.Column<int>(type: "int", nullable: false),
+                    Expression = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstOperand = table.Column<double>(type: "float", nullable: false),
                     SecondOperand = table.Column<double>(type: "float", nullable: false),
                     Result = table.Column<double>(type: "float", nullable: false),

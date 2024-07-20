@@ -1,5 +1,6 @@
 
 using Calculator.Core.Interfaces;
+using Calculator.Core.Models;
 using Calculator.Data.DatabaseContext;
 using Calculator.Data.Interfaces;
 using Calculator.Infrastructure.Interfaces;
@@ -16,12 +17,29 @@ namespace CalculatorAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+             .AddJsonOptions(options =>
+             {
+                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+             });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .SetIsOriginAllowedToAllowWildcardSubdomains()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
 
             builder.Services.AddDbContext<CalculatorDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
@@ -48,6 +66,8 @@ namespace CalculatorAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseCors();
 
             app.Run();
         }

@@ -28,8 +28,9 @@ namespace Calculator.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Expression")
-                        .HasColumnType("int");
+                    b.Property<string>("Expression")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("FirstOperand")
                         .HasColumnType("float");
