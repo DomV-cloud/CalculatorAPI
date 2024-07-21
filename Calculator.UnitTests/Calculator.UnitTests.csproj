@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Calculator.Data\Calculator.Data.csproj" />
-    <ProjectReference Include="..\Calculator.Infrastructure\Calculator.Infrastructure.csproj" />
     <ProjectReference Include="..\Calculator.Services\Calculator.Services.csproj" />
   </ItemGroup>
 

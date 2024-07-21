@@ -11,9 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculator.Data", "Calculat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculator.Services", "Calculator.Services\Calculator.Services.csproj", "{BCFA20CC-7D33-4AAE-B6DC-34D86C8EA887}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculator.Infrastructure", "Calculator.Infrastructure\Calculator.Infrastructure.csproj", "{032616CE-C430-40B5-8718-A84334F3A735}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.UnitTests", "Calculator.UnitTests\Calculator.UnitTests.csproj", "{6FF976C6-BE1D-4D43-9D4B-D746D2A6F987}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculator.UnitTests", "Calculator.UnitTests\Calculator.UnitTests.csproj", "{6FF976C6-BE1D-4D43-9D4B-D746D2A6F987}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{BCFA20CC-7D33-4AAE-B6DC-34D86C8EA887}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCFA20CC-7D33-4AAE-B6DC-34D86C8EA887}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCFA20CC-7D33-4AAE-B6DC-34D86C8EA887}.Release|Any CPU.Build.0 = Release|Any CPU
-		{032616CE-C430-40B5-8718-A84334F3A735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{032616CE-C430-40B5-8718-A84334F3A735}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{032616CE-C430-40B5-8718-A84334F3A735}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{032616CE-C430-40B5-8718-A84334F3A735}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6FF976C6-BE1D-4D43-9D4B-D746D2A6F987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6FF976C6-BE1D-4D43-9D4B-D746D2A6F987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FF976C6-BE1D-4D43-9D4B-D746D2A6F987}.Release|Any CPU.ActiveCfg = Release|Any CPU
